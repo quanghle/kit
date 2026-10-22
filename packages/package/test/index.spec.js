@@ -249,6 +249,18 @@ if (!process.env.CI) {
 			compare('b.js');
 			compare('b.d.ts');
 
+			// removes the compiled output of a deleted .ts file
+			remove('src/lib/b.ts');
+			await settled();
+			expect(fs.existsSync(join(cwd, 'package/b.js'))).toBe(false);
+			expect(fs.existsSync(join(cwd, 'package/b.d.ts'))).toBe(false);
+
+			// removes the output of a deleted .js file
+			remove('src/lib/a.js');
+			await settled();
+			expect(fs.existsSync(join(cwd, 'package/a.js'))).toBe(false);
+			expect(fs.existsSync(join(cwd, 'package/a.d.ts'))).toBe(false);
+
 			// processes a Svelte file
 			write('src/lib/Test.svelte', '<script lang="ts">export let answer: number</script>');
 			await settled();
